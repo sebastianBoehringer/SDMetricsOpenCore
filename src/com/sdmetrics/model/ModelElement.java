@@ -18,6 +18,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with SDMetrics Open Core.  If not, see <http://www.gnu.org/licenses/>.
  *
+ *
+ * The file was changed to use LinkedHashSet instead of a regular HashSet to
+ * preserve order when parsing XMI. This is important for
+ * Attributes like OpaqueBehavior#body to have a correct correspondence to
+ * OpaqueBehavior#language.
+ * The specific changes apply to the imports and lines 105 and 140 respectively.
+ * Sebastian Boehringer, 2020-04-27
  */
 package com.sdmetrics.model;
 
@@ -26,7 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * Represents a model element of a model. A model element stores the values of
@@ -94,7 +101,7 @@ public class ModelElement {
 		Collection<ModelElement> relset = relations.get(relationName);
 		if (relset == null) {
 			// no relations of relationName yet, install set
-			relset = new HashSet<ModelElement>(INITIAL_FEW_ELEMENTS);
+			relset = new LinkedHashSet<>(INITIAL_FEW_ELEMENTS);
 			relations.put(relationName, relset);
 		}
 		relset.add(source);
@@ -130,7 +137,7 @@ public class ModelElement {
 			@SuppressWarnings("rawtypes")
 			Collection set = ((Collection) attributeValues[index]);
 			if (set == null) {
-				set = new HashSet<Object>(INITIAL_FEW_ELEMENTS);
+				set = new LinkedHashSet(INITIAL_FEW_ELEMENTS);
 				attributeValues[index] = set;
 			}
 			set.add(value);

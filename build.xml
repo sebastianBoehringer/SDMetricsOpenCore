@@ -25,7 +25,8 @@ Ant build script to compile and test the SDMetrics Open Core.
             <fileset dir="${src}" includes="**/*.xml" />
         </copy>
         <!-- added jarpackaging 11.12.2019, Sebastian Boehringer-->
-        <jar destfile="${out}/SDMetricsOpenCore-2.35.jar" basedir="${bin}" />
+        <jar destfile="${out}/SDMetricsOpenCore-2.35-mod.jar"
+             basedir="${bin}" />
         <!-- added deletion of intermediate directory for class files 11.12.2019, Sebastian Boehringer-->
         <delete dir="${bin}"/>
 
