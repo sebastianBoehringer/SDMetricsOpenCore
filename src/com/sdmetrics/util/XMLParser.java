@@ -18,11 +18,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with SDMetrics Open Core.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * The file was changed to provide a method to parse input strings.
+ * This means that the parser can parse more now than just files.
+ * The specific changes apply to the imports and lines 83 and 119 respectively.
+ * Sebastian Boehringer, 2020-05-17
  */
 package com.sdmetrics.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 
@@ -75,6 +80,43 @@ public class XMLParser {
 			}
 		});
 	}
+
+    /**
+     * Parses the XML file at the specified URI.
+     *
+     * @param in Inputstream to parse
+     * @param handler Default handler to process the XML elements
+     * @throws Exception A problem occurred while parsing
+     */
+	public void parse(InputStream in, ContentHandler handler) throws Exception{
+        parser.setContentHandler(handler);
+        // parse file, enhance exception message on error
+        Exception ex = null;
+        try {
+            parser.parse(new InputSource(in));
+        } catch (org.xml.sax.SAXParseException spe) {
+            errorMessage = "Parse error in line " + spe.getLineNumber() + ": "
+                           + spe.getMessage();
+            ex = spe;
+        } catch (org.xml.sax.SAXException se) {
+            errorMessage = se.getMessage();
+            ex = se;
+        } catch (IOException e) {
+            errorMessage = "Could not use the inputstream '" + in.toString() + "'";
+            ex = e;
+        } catch (Exception e) {
+            errorMessage = "Internal parser error: " + e.getMessage();
+            ex = e;
+        }
+
+        // rethrow the exception
+        if (ex != null) {
+            if (DEBUG) {
+                ex.printStackTrace(System.err);
+            }
+            throw ex;
+        }
+    }
 
 	/**
 	 * Parses the XML file at the specified URI.
